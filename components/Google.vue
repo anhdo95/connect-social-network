@@ -28,16 +28,19 @@ export default {
         // eslint-disable-next-line no-undef
         const auth2 = gapi.auth2.init({
           client_id: process.env.GOOGLE_CLIENT_ID,
-          scope: 'profile email openid',
+          scope: 'profile email openid https://www.googleapis.com/auth/drive',
           prompt: 'select_account'
         })
 
         auth2.isSignedIn.listen(this.onSignInChanged)
 
         try {
+          await this.grantOfflineAccess(auth2)
+
           // const user = await this.requestAdditionalScopes(auth2)
-          const user = await auth2.signIn()
-          console.log('user', user)
+          // const user = await auth2.signIn()
+
+          // console.log('user', user)
         } catch (error) {
           // popup_closed_by_user | access_denied
           console.error(error)
@@ -55,6 +58,14 @@ export default {
 
       const user = auth2.currentUser.get()
       return await user.grant(options)
+    },
+    /**
+     * To use Google services on behalf of a user when the user is offline
+     */
+    async grantOfflineAccess(auth2) {
+      const response = await auth2.grantOfflineAccess()
+
+      console.log(`Sending code "${response.code}" to the server...`)
     },
     onSignOut() {
       // eslint-disable-next-line no-undef
