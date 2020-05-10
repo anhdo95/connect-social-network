@@ -5,7 +5,7 @@
       <img class="btn__icon" src="@/assets/svg/google.svg" />
       <span class="btn__text">Sign in</span>
     </button>
-    <button class="btn btn--sign-in" @click="onSignOut">
+    <button v-if="isSignedIn" class="btn btn--sign-in" @click="onSignOut">
       <img class="btn__icon" src="@/assets/svg/google.svg" />
       <span class="btn__text">Sign out</span>
     </button>
@@ -15,6 +15,11 @@
 <script>
 export default {
   name: 'Google',
+  data() {
+    return {
+      isSignedIn: false
+    }
+  },
   created() {},
   methods: {
     onSignIn() {
@@ -23,30 +28,46 @@ export default {
         // eslint-disable-next-line no-undef
         const auth2 = gapi.auth2.init({
           client_id: process.env.GOOGLE_CLIENT_ID,
-          scope: 'profile',
+          scope: 'profile email openid',
           prompt: 'select_account'
         })
 
-        // this.requestAdditionalScopes(auth2)
+        auth2.isSignedIn.listen(this.onSignInChanged)
 
-        const user = await auth2.signIn()
-
-        console.log('user', user)
+        try {
+          // const user = await this.requestAdditionalScopes(auth2)
+          const user = await auth2.signIn()
+          console.log('user', user)
+        } catch (error) {
+          // popup_closed_by_user | access_denied
+          console.error(error)
+        }
       })
     },
-    requestAdditionalScopes(auth2) {
+    onSignInChanged(isSignedIn) {
+      this.isSignedIn = isSignedIn
+    },
+    async requestAdditionalScopes(auth2) {
       // eslint-disable-next-line no-undef
       const options = new gapi.auth2.SigninOptionsBuilder({
-        scope: 'email https://www.googleapis.com/auth/drive'
+        scope: 'https://www.googleapis.com/auth/drive'
       })
 
       const user = auth2.currentUser.get()
-      user.grant(options)
+      return await user.grant(options)
     },
     onSignOut() {
       // eslint-disable-next-line no-undef
-      const auth2 = gapi.auth2.getAuthInstance()
-      auth2.signOut().then(() => console.log('User signed out.'))
+      // gapi.auth2
+      //   .getAuthInstance()
+      //   .signOut()
+      //   .then(() => console.log('User signed out!'))
+
+      // eslint-disable-next-line no-undef
+      gapi.auth2
+        .getAuthInstance()
+        .disconnect()
+        .then(() => console.log('User disconnected!'))
     }
   }
 }
