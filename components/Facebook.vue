@@ -39,7 +39,9 @@ export default {
       if (!this.isSignedIn) {
         const options = {
           // https://developers.facebook.com/docs/facebook-login/permissions
-          scope: 'public_profile,email,user_link,user_friends,user_gender'
+          scope: 'public_profile,email,user_link,user_friends,user_gender',
+          // return_scopes: true,
+          auth_type: 'rerequest,reauthorize'
         }
 
         // eslint-disable-next-line no-undef
@@ -51,8 +53,17 @@ export default {
       this.isSignedIn = response.status === 'connected'
 
       if (this.isSignedIn) {
+        console.log(
+          `Sending token "${response.authResponse.accessToken}" to the server...`
+        )
+
         // eslint-disable-next-line no-undef
         FB.api('/me', (response) => console.log('me', response))
+
+        // eslint-disable-next-line no-undef
+        FB.api('/me/permissions', (response) =>
+          console.log('permissions', response)
+        )
       } else {
         console.log('User cancelled login or did not fully authorize.')
       }
