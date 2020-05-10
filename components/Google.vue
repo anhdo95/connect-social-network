@@ -86,25 +86,8 @@ export default {
 
 <style lang="scss" scoped>
 .google {
-  padding: 1rem 0;
-  border-bottom: 1px solid #888;
-
   &__heading {
     margin-bottom: 1rem;
-  }
-}
-
-.btn {
-  display: inline-block;
-  padding: 0.5rem 1.5rem;
-  background-color: #f2f2f2;
-  border: none;
-  border-radius: 100px;
-  outline: none;
-
-  &__icon,
-  &__text {
-    vertical-align: middle;
   }
 }
 </style>

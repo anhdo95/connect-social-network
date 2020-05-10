@@ -22,6 +22,11 @@ export default {
         src: 'https://apis.google.com/js/platform.js',
         async: true,
         defer: true
+      },
+      {
+        src: 'https://connect.facebook.net/en_US/sdk.js',
+        async: true,
+        defer: true
       }
     ]
   },
