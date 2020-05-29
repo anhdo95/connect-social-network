@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { isWebview } from '@/utils/compatibility'
+
 export default {
   name: 'Facebook',
   data() {
@@ -36,17 +38,38 @@ export default {
   },
   methods: {
     onSignIn() {
-      if (!this.isSignedIn) {
-        const options = {
-          // https://developers.facebook.com/docs/facebook-login/permissions
-          scope: 'public_profile,email,user_link,user_friends,user_gender',
-          // return_scopes: true,
-          auth_type: 'rerequest,reauthorize'
-        }
+      if (this.isSignedIn) return
 
-        // eslint-disable-next-line no-undef
-        FB.login(this.handleResponse, options)
+      if (isWebview()) {
+        const params = {
+          client_id: process.env.FB_ID,
+          scope: "public_profile,email,user_link,user_friends,user_gender",
+          response_type: "token",
+          redirect_uri: `${window.location.origin}/auth/return/`,
+          state: JSON.stringify({
+            type: this.$constants.SOCIAL_TYPE.FB,
+            fromUrl: window.location.href,
+          }),
+        }
+        const url = new URL("https://www.facebook.com/v7.0/dialog/oauth")
+        this.lodash.forEach(params, (value, key) => {
+          url.searchParams.set(key, value)
+        })
+
+        window.location.href = url.href
+
+        return
       }
+
+      const options = {
+        // https://developers.facebook.com/docs/facebook-login/permissions
+        scope: 'public_profile,email,user_link,user_friends,user_gender',
+        // return_scopes: true,
+        auth_type: 'rerequest,reauthorize'
+      }
+
+      // eslint-disable-next-line no-undef
+      FB.login(this.handleResponse, options)
     },
     handleResponse(response) {
       console.log('response', response)

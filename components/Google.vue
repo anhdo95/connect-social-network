@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { isWebview } from '@/utils/compatibility'
+
 export default {
   name: 'Google',
   data() {
@@ -25,6 +27,39 @@ export default {
     onSignIn() {
       // eslint-disable-next-line no-undef
       gapi.load('auth2', async () => {
+        if (this.isWebview()) {
+          const params = {
+            client_id: process.env.CLIENT_ID_GOOGLE,
+            response_type: "id_token",
+            // https://openid.net/specs/openid-connect-core-1_0.html#ImplicitAuthRequest
+            nonce: "n-0S6_WzA2Mj",
+            scope: "profile email openid https://www.googleapis.com/auth/drive",
+            prompt: "consent",
+            ss_domain: window.location.origin,
+            origin: window.location.origin,
+            flowName: "GeneralOAuthFlow",
+            redirect_uri: `${window.location.origin}/auth/return`,
+            state: JSON.stringify({
+              type: this.$constants.SOCIAL_TYPE.GOOGLE,
+              fromUrl: window.location.href,
+            }),
+          }
+
+          const url = new URL("https://accounts.google.com/o/oauth2/v2/auth")
+          // url.searchParams.set("response_type", "code permission id_token")
+          // url.searchParams.set("access_type", "offline")
+          // url.searchParams.set("token_key", "code")
+          // url.searchParams.set("include_granted_scopes", true)
+
+          this.lodash.forEach(params, (value, key) => {
+            url.searchParams.set(key, value)
+          })
+
+          window.location.href = url.href
+
+          return
+        }
+
         // eslint-disable-next-line no-undef
         const auth2 = gapi.auth2.init({
           client_id: process.env.GOOGLE_CLIENT_ID,
