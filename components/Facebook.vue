@@ -22,20 +22,15 @@ export default {
       isSignedIn: false
     }
   },
-  mounted() {
-    // eslint-disable-next-line no-undef
-    FB.init({
-      appId: process.env.FACEBOOK_APP_ID,
-      autoLogAppEvents: true,
-      xfbml: true,
-      version: 'v7.0'
-    })
 
-    // eslint-disable-next-line no-undef
-    FB.getLoginStatus((response) => {
-      this.isSignedIn = response.status === 'connected'
-    })
+  mounted() {
+    /* eslint-disable */
+    //   FB.getLoginStatus((response) => {
+    //     this.isSignedIn = response.status === 'connected'
+    //   })
+    /* eslint-enable */
   },
+
   methods: {
     onSignIn() {
       if (this.isSignedIn) return
@@ -43,15 +38,15 @@ export default {
       if (isWebview()) {
         const params = {
           client_id: process.env.FB_ID,
-          scope: "public_profile,email,user_link,user_friends,user_gender",
-          response_type: "token",
+          scope: 'public_profile,email,user_link,user_friends,user_gender',
+          response_type: 'token',
           redirect_uri: `${window.location.origin}/auth/return/`,
           state: JSON.stringify({
             type: this.$constants.SOCIAL_TYPE.FB,
-            fromUrl: window.location.href,
-          }),
+            fromUrl: window.location.href
+          })
         }
-        const url = new URL("https://www.facebook.com/v7.0/dialog/oauth")
+        const url = new URL('https://www.facebook.com/v7.0/dialog/oauth')
         this.lodash.forEach(params, (value, key) => {
           url.searchParams.set(key, value)
         })
@@ -71,6 +66,7 @@ export default {
       // eslint-disable-next-line no-undef
       FB.login(this.handleResponse, options)
     },
+
     handleResponse(response) {
       console.log('response', response)
       this.isSignedIn = response.status === 'connected'
@@ -91,9 +87,18 @@ export default {
         console.log('User cancelled login or did not fully authorize.')
       }
     },
+
     onSignOut() {
-      // eslint-disable-next-line
-      FB.logout(() => this.isSignedIn = false)
+      /* eslint-disable */
+			FB.getLoginStatus(response => {
+				if (response.status === 'connected') {
+					FB.logout(() => {
+            console.log('Logged Out!')
+            this.isSignedIn = false
+					})
+				}
+			})
+			/* eslint-enable */
     }
   }
 }
