@@ -23,6 +23,11 @@ export default {
         async: true,
         defer: true
       },
+      {
+        src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAP_KEY}&libraries=places`,
+        async: true,
+        defer: true
+      }
       // {
       //   src: 'https://connect.facebook.net/en_US/sdk.js',
       //   async: true,

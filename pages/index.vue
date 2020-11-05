@@ -2,17 +2,20 @@
   <div class="container">
     <Google />
     <Facebook />
+    <GooglePlaces />
   </div>
 </template>
 
 <script>
 import Google from '@/components/Google'
 import Facebook from '@/components/Facebook'
+import GooglePlaces from '@/components/GooglePlaces'
 
 export default {
   components: {
     Google,
-    Facebook
+    Facebook,
+    GooglePlaces
   }
 }
 </script>
