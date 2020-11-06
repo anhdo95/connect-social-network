@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="scriptsEmbedded">
     <nuxt />
   </div>
 </template>
@@ -8,9 +8,25 @@
 export default {
   name: 'LayoutDefault',
 
+  data() {
+    return {
+      scripts: {
+        facebookEmbedded: false,
+        googleMapEmbedded: false
+      }
+    }
+  },
+
+  computed: {
+    scriptsEmbedded() {
+      return Object.values(this.scripts).every(Boolean)
+    }
+  },
+
   created() {
     if (process.client) {
       this.embedFacebookSdk()
+      this.embedGoogleMapSdk()
     }
   },
 
@@ -38,6 +54,26 @@ export default {
         xfbml: true,
         version: 'v7.0'
       })
+
+      this.scripts.facebookEmbedded = true
+    },
+
+    embedGoogleMapSdk() {
+      const script = document.createElement('script')
+      script.async = true
+      script.crossorigin = 'anonymous'
+      script.addEventListener(
+        'load',
+        () => (this.scripts.googleMapEmbedded = true)
+      )
+
+      const url = new URL('https://maps.googleapis.com/maps/api/js')
+      url.searchParams.set('key', process.env.GOOGLE_MAP_KEY)
+      url.searchParams.set('language', process.env.I18N_LOCALE) // https://developers.google.com/maps/faq#languagesupport
+      url.searchParams.set('libraries', 'places')
+
+      script.src = url.href
+      document.head.appendChild(script)
     }
   }
 }
