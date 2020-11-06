@@ -10,15 +10,6 @@
 </template>
 
 <script>
-const componentForm = {
-  street_number: 'short_name',
-  route: 'long_name',
-  locality: 'long_name',
-  administrative_area_level_1: 'short_name',
-  country: 'long_name',
-  postal_code: 'short_name'
-}
-
 export default {
   name: 'GooglePlaces',
 
@@ -49,7 +40,7 @@ export default {
         // 'address_components',
         // 'geometry',
         // 'icon',
-        // 'name',
+        'name'
         // 'place_id',
         // 'formatted_address'
       ])
@@ -61,17 +52,7 @@ export default {
       // Get the place details from the autocomplete object.
       const place = this.autocomplete.getPlace()
       console.log('place', place)
-
-      for (const component of place.address_components) {
-        const addressType = component.types[0]
-
-        if (componentForm[addressType]) {
-          const val = component[componentForm[addressType]]
-          console.log(addressType, val)
-        }
-      }
-
-      console.log(this.$refs.autocomplete.value)
+      console.log(place.name) // the same as `this.$refs.autocomplete.value`
     },
 
     // Bias the autocomplete object to the user's geographical location,
