@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h3 class="heading">Google Maps Places Autocomplete</h3>
     <input
       ref="autocomplete"
       class="autocomplete"

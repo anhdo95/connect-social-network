@@ -2,6 +2,7 @@
 
 # Custom
 package-lock.json
+static/swenv.js
 
 ### Node template
 # Logs

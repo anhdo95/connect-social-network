@@ -99,6 +99,10 @@ html {
   margin: 0;
 }
 
+.heading {
+  margin-bottom: 1rem;
+}
+
 .button--green {
   display: inline-block;
   border-radius: 4px;

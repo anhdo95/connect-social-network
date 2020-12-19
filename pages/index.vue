@@ -3,6 +3,7 @@
     <Google />
     <Facebook />
     <GooglePlaces />
+    <FirebaseCloudMessaging />
   </div>
 </template>
 
@@ -10,12 +11,14 @@
 import Google from '@/components/Google'
 import Facebook from '@/components/Facebook'
 import GooglePlaces from '@/components/GooglePlaces'
+import FirebaseCloudMessaging from '@/components/FirebaseCloudMessaging'
 
 export default {
   components: {
     Google,
     Facebook,
-    GooglePlaces
+    GooglePlaces,
+    FirebaseCloudMessaging
   }
 }
 </script>
